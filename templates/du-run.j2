@@ -1,0 +1,10 @@
+#!/bin/bash
+# Suomela June 2015
+
+# Let's assume we have several dirs to du
+
+for D in {{ du_dirs }}
+do
+    cd $D
+    du -sh * |tee du-`date "+%Y-%m"` > /dev/null
+done

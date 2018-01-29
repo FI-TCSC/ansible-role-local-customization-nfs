@@ -1,0 +1,26 @@
+---
+- name: Copy Dell Perccli.rpm to fileservers
+  tags: perc,nfs
+  copy: src=files/perccli-1.11.03-1.noarch.rpm dest=/tmp
+
+- name: Install Dell perccli to fileserver
+  tags: perc,nfs
+  command: yum localinstall -y /tmp/perccli-1.11.03-1.noarch.rpm
+
+- name: Let's create du-run from template
+  tags: du,nfs
+  template: 
+    src: du-run.j2
+    dest: /usr/local/sbin/du-run
+    owner: root
+    group: admin
+    mode: 0755
+
+- name: Create cronjob for monthly du-run
+  tags: du,nfs
+  cron:
+    name: "DU-run"
+    cron_file: "du"
+    user: root
+    special_time: monthly
+    job: "/usr/local/sbin/du-run"
