@@ -1,11 +1,30 @@
 ---
-- name: Copy Dell Perccli.rpm to fileservers
-  tags: perc,nfs
-  copy: src=files/perccli-1.11.03-1.noarch.rpm dest=/tmp
 
-- name: Install Dell perccli to fileserver
-  tags: perc,nfs
-  command: yum localinstall -y /tmp/perccli-1.11.03-1.noarch.rpm
+#- name: Copy newest firmwares to server tmp
+#  tags: fw
+#  copy: src=files/Dell/{{ item }} dest=/tmp/Dell mode=0755
+#  with_items:
+#    - H740P_SAS-RAID_Firmware_1P67X_LN_50.5.0-1750_A06.BIN
+#    - 14G_Backplane_Firmware_762CC_LN_2.41_A00-00.BIN
+#    - H730P_SAS-RAID_Firmware_F675Y_LN_25.5.5.0005_A13.BIN
+#    - "{{ dell_perc_rpm }}"
+#  when: ( ansible_system_vendor == "Dell Inc." and ansible_virtualization_role != "guest")
+#
+#- name: Install Dell perccli to fileserver
+#  tags: perc
+#  command: "yum localinstall -y /tmp/Dell/{{ dell_perc_rpm }}"
+#
+#- name: Check current PERC version
+#  tags: perc,debug
+#  script: files/check_perc_version.sh
+#  register: perc_version
+#
+#- debug: 
+#    msg: 
+#      - "PERC Firmware-version: {{ perc_version.stdout | regex_replace ('^(.*)\\r\\n$', '\\1') }}"
+#      - "PERC newest Firmware-version: {{ perc_version [ansible_product_name] }}"
+#  tags: idrac,debug
+#
 
 - name: Let's create du-run from template
   tags: du,nfs
