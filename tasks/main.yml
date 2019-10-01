@@ -43,3 +43,8 @@
     user: root
     special_time: monthly
     job: "/usr/local/sbin/du-run"
+
+    #- name: Let's install PERCcli
+    # tags: perc
+    #copy: src=Dell/{{ bios_newest_name[ansible_product_name] }} mode=0755 dest=/tmp
+    #when: ( ansible_system_vendor == "Dell Inc." )
