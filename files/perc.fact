@@ -1,0 +1,29 @@
+#!/bin/sh
+PERCCLI="/opt/MegaRAID/perccli/perccli64"
+N=`$PERCCLI show ctrlcount | awk -F "=" '/Controller Count/{print $2}'`
+echo "{"
+for id in `seq 0 $(($N-1))`
+do 
+    NAME=$(/opt/MegaRAID/perccli/perccli64 /c$id show |awk -F "=" '/Product Name/ {print $2}')
+    FW=$(/opt/MegaRAID/perccli/perccli64 /c$id show |awk -F "=" '/FW Package Build/ {print $2}')
+    echo "  \"$id\": {"
+    echo "    \"name\": \"$NAME\","
+    echo "    \"fw\": \"$FW\""
+    if [[ $id -lt $((N-1)) ]]
+    then
+        echo "  },"
+    else
+   		echo "  }"
+    fi
+done
+echo "}"
+#{
+#"1": {
+#		"name": "PERC H830 Adapter", 
+#		"FW": "25.5.5.0005" 
+#     },
+#"0": {
+#		"name": "PERC H730P Mini", 
+#		"FW": "25.5.5.0005" 
+#     }
+#}
