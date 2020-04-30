@@ -1,3 +1,4 @@
 ---
 
 du_dirs:    "/home"
+du_params:  "--summarize --block-size=1M --threshold=100M"

@@ -1,10 +1,12 @@
 #!/bin/bash
-# Suomela June 2015
+# heavily modified by mmoa
+#
+# original by Suomela June 2015
 
 # Let's assume we have several dirs to du
 
 for D in {{ du_dirs }}
 do
     cd $D
-    du -sh * |tee du-`date "+%Y-%m"` > /dev/null
+    du {{ du_params }} * > du-`date "+%Y-%m-%d"`
 done
