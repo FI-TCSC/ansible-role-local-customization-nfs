@@ -1,0 +1,39 @@
+#!/bin/bash
+# {{ ansible_managed }}
+
+# Uses following ansible-variables:
+# du_dirs:	as list of directories we want to follow
+# du_params: additional params to du-command e.g. --exclude
+
+# So now we are using some advanced scripting to calculate also changes per week etc.
+
+LOAD=`uptime |awk -F'average:' '{ split($2,a,", "); print a[2] }'`
+MAXLOAD="4.0"
+
+# If system is under stress, lets not make it work even harder:
+#[[ "${LOAD}" > "${MAXLOAD}" ]] && exit 0
+
+# Let's assume we have several dirs to du
+for D in {{ du_dirs }}
+do
+	PREVIOUS=`readlink ${D}/dus/du-latest`
+	CURRENT="du-`date "+%Y-%m-%d"`"
+    cd ${D}
+    du --summarize --block-size=1G --threshold=10G --exclude="opt" --exclude="dus" * > dus/${CURRENT}
+
+	# Lets create new latest -link
+	if [[ -h ${D}/dus/du-latest ]] 
+	then
+		/bin/rm ${D}/dus/du-latest
+		ln -s ./${CURRENT} ${D}/dus/du-latest
+	fi
+
+	# Find week's biggest changes
+	cd ${D}/dus
+
+	# This will read first file to new[] array, and then subtracts value from previous-file from it
+	awk 'NR==FNR { new[$2]=$1;next } { if (old[$2]-$1!=0) print $2 ": " new[$2]-$1 } ' ${CURRENT} ${PREVIOUS} |sort -r -n -k2 > Changes
+
+done
+
+

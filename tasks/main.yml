@@ -29,7 +29,7 @@
 - name: Let's create du-run from template
   tags: du,nfs
   template: 
-    src: du-run.j2
+    src: du-run_v2.j2
     dest: /usr/local/sbin/du-run
     owner: root
     group: admin
