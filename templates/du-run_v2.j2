@@ -7,11 +7,14 @@
 
 # So now we are using some advanced scripting to calculate also changes per week etc.
 
+# If we are passive half of pcs-cluster (= home is mounted) do nothing
+`grep -q {{ du_dirs | first }} /proc/mounts || exit 0
+
 LOAD=`uptime |awk -F'average:' '{ split($2,a,", "); print a[2] }'`
 MAXLOAD="4.0"
 
 # If system is under stress, lets not make it work even harder:
-#[[ "${LOAD}" > "${MAXLOAD}" ]] && exit 0
+[[ "${LOAD}" > "${MAXLOAD}" ]] && exit 0
 
 # Let's assume we have several dirs to du
 for D in {{ du_dirs }}
@@ -30,6 +33,9 @@ do
 
 	# Find week's biggest changes
 	cd ${D}/dus
+
+	# Let's save previous version
+	mv Changes Changes.old
 
 	# This will read first file to new[] array, and then subtracts value from previous-file from it
 	awk 'NR==FNR { new[$2]=$1;next } { if (old[$2]-$1!=0) print $2 ": " new[$2]-$1 } ' ${CURRENT} ${PREVIOUS} |sort -r -n -k2 > Changes
