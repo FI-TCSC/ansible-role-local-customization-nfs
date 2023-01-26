@@ -8,7 +8,7 @@
 # So now we are using some advanced scripting to calculate also changes per week etc.
 
 # If we are passive half of pcs-cluster (= home is mounted) do nothing
-`grep -q {{ du_dirs | first }} /proc/mounts || exit 0
+`grep -q {{ du_dirs | first }} /proc/mounts `|| exit 0
 
 LOAD=`uptime |awk -F'average:' '{ split($2,a,", "); print a[2] }'`
 MAXLOAD="4.0"
